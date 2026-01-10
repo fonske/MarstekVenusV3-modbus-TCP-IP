@@ -1,12 +1,12 @@
-# -----------------------------------------------------------------
-# Home Assistant Marstek V3 - Modbus TCP/IP direct through ethernet
+# ----------------------------------------------------------------------
+# Home Assistant Marstek V1/V2 - Modbus TCP/IP direct through Elfin EW11
 # Version: 1.0
-# Note: Only for EMS V144 or higher
+# Tip: https://github.com/gitcodebob/marstek-venus-rs485-node-red
 # Fork of https://github.com/Superduper1969/MarstekVenus-ElfinEW11
-# -----------------------------------------------------------------
+# ----------------------------------------------------------------------
 # Use this file for the first Marstek Venus.
 # change host: [YOURIPADDRESS] to host: 192.168.0.245 (for example)
-# -----------------------------------------------------------------
+# ----------------------------------------------------------------------
 
 # ------
 # MODBUS
@@ -14,7 +14,7 @@
 modbus:
   - name: marstekvenus1  # Rename marstekvenus1 to marstekvenus2, or marstekvenus3 when multiple batteries
     type: tcp
-    host: [YOURIPADRESS]
+    host: [YOURIPADDRESS] 
     port: 502
     delay: 1
     message_wait_milliseconds: 35
@@ -72,7 +72,7 @@ modbus:
 
       - name: "Marstek m1 MAC"
         unique_id: marstek_m1_mac
-        address: 30304
+        address: 30402
         slave: 1
         scan_interval: 300
         input_type: holding
@@ -82,7 +82,7 @@ modbus:
 
       - name: "Marstek m1 COM Module version"
         unique_id: marstek_m1_com_module_version
-        address: 30350
+        address: 30800
         slave: 1
         scan_interval: 300
         input_type: holding
@@ -102,7 +102,7 @@ modbus:
 
       - name: "Marstek m1 EMS version"
         unique_id: marstek_m1_ems_version
-        address: 30200
+        address: 31101
         slave: 1
         scan_interval: 300
         input_type: holding
@@ -111,9 +111,9 @@ modbus:
         offset: 0
         precision: 0
 
-      - name: "Marstek m1 VNS version"
-        unique_id: marstek_m1_vns_version
-        address: 30202
+      - name: "Marstek m1 Software version"
+        unique_id: marstek_m1_software_version
+        address: 31100
         slave: 1
         scan_interval: 300
         input_type: holding
@@ -124,7 +124,7 @@ modbus:
 
       - name: "Marstek m1 BMS version"
         unique_id: marstek_m1_bms_version
-        address: 30204
+        address: 31102
         slave: 1
         scan_interval: 300
         input_type: holding
@@ -149,7 +149,7 @@ modbus:
 
       - name: "Marstek m1 Battery Current"
         unique_id: marstek_m1_battery_current
-        address: 30101
+        address: 32101
         slave: 1
         scan_interval: 10
         input_type: holding
@@ -163,11 +163,11 @@ modbus:
 
       - name: "Marstek m1 Battery Power"
         unique_id: marstek_m1_battery_power
-        address: 30001
+        address: 32102
         slave: 1
         scan_interval: 10
         input_type: holding
-        data_type: int16
+        data_type: int32
         unit_of_measurement: W
         device_class: power
         state_class: measurement
@@ -217,6 +217,20 @@ modbus:
         offset: 0
         precision: 1
 
+      - name: "Marstek m1 AC Current"
+        unique_id: marstek_m1_ac_current
+        address: 32201
+        slave: 1
+        scan_interval: 30
+        input_type: holding
+        data_type: int16
+        unit_of_measurement: A
+        device_class: current
+        state_class: measurement
+        scale: 0.01
+        offset: 0
+        precision: 1
+
       - name: "Marstek m1 AC Power"
         unique_id: marstek_m1_ac_power
         address: 32202
@@ -245,47 +259,47 @@ modbus:
         offset: 0
         precision: 2
 
-#      - name: "Marstek m1 AC Offgrid Voltage"  # 32300 gives 0x7E2C modbus error on v3
-#        unique_id: marstek_m1_ac_offgrid_voltage
-#        address: 32300
-#        slave: 1
-#        scan_interval: 30
-#        input_type: holding
-#        data_type: uint16
-#        unit_of_measurement: V
-#        device_class: voltage
-#        state_class: measurement
-#        scale: 0.1
-#        offset: 0
-#        precision: 1
+      - name: "Marstek m1 AC Offgrid Voltage"
+        unique_id: marstek_m1_ac_offgrid_voltage
+        address: 32300
+        slave: 1
+        scan_interval: 30
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: V
+        device_class: voltage
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
 
-#      - name: "Marstek m1 AC Offgrid Current"
-#        unique_id: marstek_m1_ac_offgrid_current
-#        address: 32301
-#        slave: 1
-#        scan_interval: 30
-#        input_type: holding
-#        data_type: int16
-#        unit_of_measurement: A
-#       device_class: current
-#        state_class: measurement
-#        scale: 0.01
-#        offset: 0
-#        precision: 1
+      - name: "Marstek m1 AC Offgrid Current"
+        unique_id: marstek_m1_ac_offgrid_current
+        address: 32301
+        slave: 1
+        scan_interval: 30
+        input_type: holding
+        data_type: int16
+        unit_of_measurement: A
+        device_class: current
+        state_class: measurement
+        scale: 0.01
+        offset: 0
+        precision: 1
 
-#      - name: "Marstek m1 AC Offgrid Power"
-#        unique_id: marstek_m1_ac_offgrid_power
-#        address: 32302
-#        slave: 1
-#        scan_interval: 30
-#        input_type: holding
-#       data_type: int32
-#       unit_of_measurement: W
-#        device_class: power
-#        state_class: measurement
-#        scale: 1
-#        offset: 0
-#        precision: 0
+      - name: "Marstek m1 AC Offgrid Power"
+        unique_id: marstek_m1_ac_offgrid_power
+        address: 32302
+        slave: 1
+        scan_interval: 30
+        input_type: holding
+        data_type: int32
+        unit_of_measurement: W
+        device_class: power
+        state_class: measurement
+        scale: 1
+        offset: 0
+        precision: 0
 
       - name: "Marstek m1 Lifetime Charging Energy"
         unique_id: marstek_m1_lifetime_charging_energy
@@ -370,215 +384,6 @@ modbus:
         scale: 0.01
         offset: 0
         precision: 2
-
-      - name: "Marstek m1 Battery Cell 1 Voltage"
-        unique_id: marstek_m1_battery_cell_1_voltage
-        address: 34018
-        slave: 1
-        scan_interval: 30
-        input_type: holding
-        data_type: uint16
-        unit_of_measurement: "V"
-        state_class: measurement
-        scale: 0.001
-        offset: 0
-        precision: 3
-
-      - name: "Marstek m1 Battery Cell 2 Voltage"
-        unique_id: marstek_m1_battery_cell_2_voltage
-        address: 34019
-        slave: 1
-        scan_interval: 30
-        input_type: holding
-        data_type: uint16
-        unit_of_measurement: "V"
-        state_class: measurement
-        scale: 0.001
-        offset: 0
-        precision: 3
-
-      - name: "Marstek m1 Battery Cell 3 Voltage"
-        unique_id: marstek_m1_battery_cell_3_voltage
-        address: 34020
-        slave: 1
-        scan_interval: 30
-        input_type: holding
-        data_type: uint16
-        unit_of_measurement: "V"
-        state_class: measurement
-        scale: 0.001
-        offset: 0
-        precision: 3
-
-      - name: "Marstek m1 Battery Cell 4 Voltage"
-        unique_id: marstek_m1_battery_cell_4_voltage
-        address: 34021
-        slave: 1
-        scan_interval: 30
-        input_type: holding
-        data_type: uint16
-        unit_of_measurement: "V"
-        state_class: measurement
-        scale: 0.001
-        offset: 0
-        precision: 3
-
-      - name: "Marstek m1 Battery Cell 5 Voltage"
-        unique_id: marstek_m1_battery_cell_5_voltage
-        address: 34022
-        slave: 1
-        scan_interval: 30
-        input_type: holding
-        data_type: uint16
-        unit_of_measurement: "V"
-        state_class: measurement
-        scale: 0.001
-        offset: 0
-        precision: 3
-
-      - name: "Marstek m1 Battery Cell 6 Voltage"
-        unique_id: marstek_m1_battery_cell_6_voltage
-        address: 34023
-        slave: 1
-        scan_interval: 30
-        input_type: holding
-        data_type: uint16
-        unit_of_measurement: "V"
-        state_class: measurement
-        scale: 0.001
-        offset: 0
-        precision: 3
-
-      - name: "Marstek m1 Battery Cell 7 Voltage"
-        unique_id: marstek_m1_battery_cell_7_voltage
-        address: 34024
-        slave: 1
-        scan_interval: 30
-        input_type: holding
-        data_type: uint16
-        unit_of_measurement: "V"
-        state_class: measurement
-        scale: 0.001
-        offset: 0
-        precision: 3
-
-      - name: "Marstek m1 Battery Cell 8 Voltage"
-        unique_id: marstek_m1_battery_cell_8_voltage
-        address: 34025
-        slave: 1
-        scan_interval: 30
-        input_type: holding
-        data_type: uint16
-        unit_of_measurement: "V"
-        state_class: measurement
-        scale: 0.001
-        offset: 0
-        precision: 3
-
-      - name: "Marstek m1 Battery Cell 9 Voltage"
-        unique_id: marstek_m1_battery_cell_9_voltage
-        address: 34026
-        slave: 1
-        scan_interval: 30
-        input_type: holding
-        data_type: uint16
-        unit_of_measurement: "V"
-        state_class: measurement
-        scale: 0.001
-        offset: 0
-        precision: 3
-
-      - name: "Marstek m1 Battery Cell 10 Voltage"
-        unique_id: marstek_m1_battery_cell_10_voltage
-        address: 34027
-        slave: 1
-        scan_interval: 30
-        input_type: holding
-        data_type: uint16
-        unit_of_measurement: "V"
-        state_class: measurement
-        scale: 0.001
-        offset: 0
-        precision: 3
-
-      - name: "Marstek m1 Battery Cell 11 Voltage"
-        unique_id: marstek_m1_battery_cell_11_voltage
-        address: 34028
-        slave: 1
-        scan_interval: 30
-        input_type: holding
-        data_type: uint16
-        unit_of_measurement: "V"
-        state_class: measurement
-        scale: 0.001
-        offset: 0
-        precision: 3
-
-      - name: "Marstek m1 Battery Cell 12 Voltage"
-        unique_id: marstek_m1_battery_cell_12_voltage
-        address: 34029
-        slave: 1
-        scan_interval: 30
-        input_type: holding
-        data_type: uint16
-        unit_of_measurement: "V"
-        state_class: measurement
-        scale: 0.001
-        offset: 0
-        precision: 3
-
-
-      - name: "Marstek m1 Battery Cell 13 Voltage"
-        unique_id: marstek_m1_battery_cell_13_voltage
-        address: 34030
-        slave: 1
-        scan_interval: 30
-        input_type: holding
-        data_type: uint16
-        unit_of_measurement: "V"
-        state_class: measurement
-        scale: 0.001
-        offset: 0
-        precision: 3
-
-      - name: "Marstek m1 Battery Cell 14 Voltage"
-        unique_id: marstek_m1_battery_cell_14_voltage
-        address: 34031
-        slave: 1
-        scan_interval: 30
-        input_type: holding
-        data_type: uint16
-        unit_of_measurement: "V"
-        state_class: measurement
-        scale: 0.001
-        offset: 0
-        precision: 3
-
-      - name: "Marstek m1 Battery Cell 15 Voltage"
-        unique_id: marstek_m1_battery_cell_15_voltage
-        address: 34032
-        slave: 1
-        scan_interval: 30
-        input_type: holding
-        data_type: uint16
-        unit_of_measurement: "V"
-        state_class: measurement
-        scale: 0.001
-        offset: 0
-        precision: 3
-
-      - name: "Marstek m1 Battery Cell 16 Voltage"
-        unique_id: marstek_m1_battery_cell_16_voltage
-        address: 34033
-        slave: 1
-        scan_interval: 30
-        input_type: holding
-        data_type: uint16
-        unit_of_measurement: "V"
-        state_class: measurement
-        scale: 0.001
-        offset: 0
-        precision: 3
 
       - name: "Marstek m1 Internal Temperature"
         unique_id: marstek_m1_internal_temperature
@@ -743,6 +548,27 @@ modbus:
         # 0 enable
         # 1 disable
 
+      - name: "Marstek m1 Power Limit 800W"
+        unique_id: marstek_m1_power_limit_800w
+        slave: 1
+        address: 41010
+        input_type: holding
+        data_type: uint16
+        scan_interval: 60
+        scale: 1
+        offset: 0
+        precision: 0
+
+      - name: "Marstek m1 WiFi SSID"
+        unique_id: marstek_m1_wifi_ssid
+        address: 41500
+        slave: 1
+        scan_interval: 300
+        input_type: holding
+        data_type: custom
+        count: 16
+        structure: ">32s"
+
       - name: "Marstek m1 RS485 Control Mode Number"
         unique_id: marstek_m1_rs485_control_mode_number
         address: 42000
@@ -825,6 +651,30 @@ modbus:
         # Set to 0 = Manual, see registers 43100-43129
         # Set to 1 = Self consumption, aka Anti-feed
         # Set to 2 = Set to AI mode, after set reverts to 1, still determining what register changes in AI mode
+
+#      - name: "Marstek m1 Charging Cutoff Capacity number"  # not used in Gitcode Bob nodered flows
+#        unique_id: marstek_m1_charging_cutoff_capacity_number
+#        address: 44000
+#        scan_interval: 10
+#        slave: 1
+#        input_type: holding
+#        data_type: uint16
+#        unit_of_measurement: "%"
+#        scale: 1
+#        offset: 0
+#        precision: 0        
+
+#      - name: "Marstek m1 Discharge Cutoff Capacity number" # not used in Gitcode Bob nodered flows
+#        unique_id: marstek_m1_discharge_cutoff_capacity_number
+#        address: 44001
+#        scan_interval: 10
+#        slave: 1
+#        input_type: holding
+#        data_type: uint16
+#        unit_of_measurement: "%"
+#        scale: 1
+#        offset: 0
+#        precision: 0
 
       - name: "Marstek m1 Max Charge Power Number"
         unique_id: marstek_m1_max_charge_power_number
@@ -1119,6 +969,40 @@ template:
         max: 100
         optimistic: true
 
+#      - name: Marstek m1 Charging Cutoff Capacity # not used in Gitcode Bob nodered flows
+#        unique_id: marstek_m1_charging_cutoff_capacity
+#        icon: mdi:tune-variant
+#        unit_of_measurement: "%"
+#        state: "{{ states('sensor.marstek_m1_charging_cutoff_capacity_number') | float(0) }}"
+#        set_value:
+#          - service: modbus.write_register
+#            data:
+#              hub: marstekvenus1
+#              address: 44000
+#              slave: 1
+#              value: "{{ value | int }}"
+#        step: 1
+#        min: 80
+#        max: 100
+#        optimistic: true
+
+#      - name: Marstek m1 Discharging Cutoff Capacity # not used in Gitcode Bob nodered flows
+#        unique_id: marstek_m1_discharging_cutoff_capacity
+#        icon: mdi:tune-variant
+#        unit_of_measurement: "%"
+#        state: "{{ states('sensor.marstek_m1_discharging_cutoff_capacity_number') | float(0) }}"
+#        set_value:
+#          - service: modbus.write_register
+#            data:
+#              hub: marstekvenus1
+#              address: 44001
+#              slave: 1
+#              value: "{{ value | int }}"
+#        step: 1
+#        min: 12
+#        max: 79
+#        optimistic: true
+
       - name: Marstek m1 Max. Charge Power
         unique_id: marstek_m1_max_charge_power
         icon: mdi:tune-variant
@@ -1151,7 +1035,6 @@ template:
         step: 1
         min: 0
         max: 2500
-
         optimistic: true
 
 
