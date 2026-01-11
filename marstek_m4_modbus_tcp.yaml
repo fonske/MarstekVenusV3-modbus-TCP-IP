@@ -175,8 +175,8 @@ modbus:
         offset: 0
         precision: 0
 
-      - name: "Marstek m4 Battery State Of Charge Number"
-        unique_id: marstek_m4_battery_state_of_charge_number
+      - name: "Marstek m4 Battery State Of Charge"
+        unique_id: marstek_m4_battery_state_of_charge
         address: 32104
         slave: 1
         scan_interval: 30
@@ -805,16 +805,6 @@ template:
           {% set currentbat= ((currentsoc / 100 | float(default=0) * (maxbat )) /1000 | float(default=0)) | round(2) %}
           {{ currentbat }}
 
-      - name: "Marstek m4 Battery State Of Charge"
-        unique_id: marstek_m4_battery_state_of_charge
-        icon: mdi:power-plug-battery-outline
-        unit_of_measurement: "%"
-        state_class: measurement
-        device_class: battery
-        state: >
-          {% set SOC = states('sensor.marstek_m4_battery_state_of_charge_number') | int(0) %}
-          {{ SOC | int(0) }}
-
 # ---------------
 # TEMPLATE SELECT
 # ---------------
@@ -1037,4 +1027,7 @@ template:
         max: 2500
         optimistic: true
 
-
+homeassistant:
+  customize: # Add icons to modbus sensors
+    sensor.marstek_m1_battery_state_of_charge:
+      icon: mdi:power-plug-battery-outline
