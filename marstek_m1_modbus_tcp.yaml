@@ -1031,3 +1031,15 @@ homeassistant:
   customize: # Add icons to modbus sensors
     sensor.marstek_m1_battery_state_of_charge:
       icon: mdi:power-plug-battery-outline
+    sensor.marstek_m1_device_name:
+      icon: mdi:rename
+    sensor.marstek_m1_ems_version:
+      icon: mdi:factory
+    sensor.marstek_m1_software_version:
+      icon: mdi:factory
+    sensor.marstek_m1_bms_version:
+      icon: mdi:factory
+    sensor.marstek_m1_com_module_version:
+      icon: mdi:factory
+    sensor.marstek_m1_mac:
+      icon: mdi:rename-box-outline
