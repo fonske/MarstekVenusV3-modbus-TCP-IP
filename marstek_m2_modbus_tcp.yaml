@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------
-# Home Assistant Marstek Venus A - Modbus TCP/IP direct through ethernet
-# Version: 1.0
+# Home Assistant Marstek Venus A/D - Modbus TCP/IP direct through ethernet
+# Version: 1.1  / Added MPPT values
 # Note:
 # Fork of https://github.com/Superduper1969/MarstekVenus-ElfinEW11
 # -----------------------------------------------------------------
@@ -130,6 +130,174 @@ modbus:
         input_type: holding
         data_type: uint16
         scale: 1
+        offset: 0
+        precision: 0
+
+      - name: "Marstek m2 MPPT1 Voltage"
+        unique_id: marstek_m2_mppt1_voltage
+        address: 30020
+        slave: 1
+        scan_interval: 10
+        input_type: holding
+        data_type: int16
+        unit_of_measurement: V
+        device_class: voltage
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+
+      - name: "Marstek m2 MPPT2 Voltage"
+        unique_id: marstek_m2_mppt2_voltage
+        address: 30021
+        slave: 1
+        scan_interval: 10
+        input_type: holding
+        data_type: int16
+        unit_of_measurement: V
+        device_class: voltage
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+
+      - name: "Marstek m2 MPPT3 Voltage"
+        unique_id: marstek_m2_mppt3_voltage
+        address: 30022
+        slave: 1
+        scan_interval: 10
+        input_type: holding
+        data_type: int16
+        unit_of_measurement: V
+        device_class: voltage
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+
+      - name: "Marstek m2 MPPT4 Voltage"
+        unique_id: marstek_m2_mppt4_voltage
+        address: 30023
+        slave: 1
+        scan_interval: 10
+        input_type: holding
+        data_type: int16
+        unit_of_measurement: V
+        device_class: voltage
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+
+      - name: "Marstek m2 MPPT1 Current"
+        unique_id: marstek_m2_mppt1_current
+        address: 30024
+        slave: 1
+        scan_interval: 10
+        input_type: holding
+        data_type: int16
+        unit_of_measurement: A
+        device_class: current
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+
+      - name: "Marstek m2 MPPT2 Current"
+        unique_id: marstek_m2_mppt2_current
+        address: 30025
+        slave: 1
+        scan_interval: 10
+        input_type: holding
+        data_type: int16
+        unit_of_measurement: A
+        device_class: current
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+
+      - name: "Marstek m2 MPPT3 Current"
+        unique_id: marstek_m2_mppt3_current
+        address: 30026
+        slave: 1
+        scan_interval: 10
+        input_type: holding
+        data_type: int16
+        unit_of_measurement: A
+        device_class: current
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+
+      - name: "Marstek m2 MPPT4 Current"
+        unique_id: marstek_m2_mppt4_current
+        address: 30027
+        slave: 1
+        scan_interval: 10
+        input_type: holding
+        data_type: int16
+        unit_of_measurement: A
+        device_class: current
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+
+      - name: "Marstek m2 MPPT1 Power"
+        unique_id: marstek_m2_mppt1_power
+        address: 30037
+        slave: 1
+        scan_interval: 10
+        input_type: holding
+        data_type: int16
+        unit_of_measurement: W
+        device_class: power
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 0
+
+      - name: "Marstek m2 MPPT2 Power"
+        unique_id: marstek_m2_mppt2_power
+        address: 30038
+        slave: 1
+        scan_interval: 10
+        input_type: holding
+        data_type: int16
+        unit_of_measurement: W
+        device_class: power
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 0
+
+      - name: "Marstek m2 MPPT3 Power"
+        unique_id: marstek_m2_mppt3_power
+        address: 30039
+        slave: 1
+        scan_interval: 10
+        input_type: holding
+        data_type: int16
+        unit_of_measurement: W
+        device_class: power
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 0
+
+      - name: "Marstek m2 MPPT4 Power"
+        unique_id: marstek_m2_mppt4_power
+        address: 30040
+        slave: 1
+        scan_interval: 10
+        input_type: holding
+        data_type: int16
+        unit_of_measurement: W
+        device_class: power
+        state_class: measurement
+        scale: 0.1
         offset: 0
         precision: 0
 
