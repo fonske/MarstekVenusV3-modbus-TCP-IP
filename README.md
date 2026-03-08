@@ -1,4 +1,4 @@
-# Marstek Venus A-modbus-TCP-IP
+# Marstek Venus A/D-modbus-TCP-IP
 ### **Home assistant yaml files to readout the Marstek V3 directly through ethernet by modbus TCP-IP**
 
 * To use this in your Home Assistant setup add this block to your main configuration.yaml file:
@@ -23,4 +23,10 @@ For the graphics inside the menu go to HACS (if installed) and install apexchart
 .
 > [!TIP]
 > To control the battery(s) using NodeRed have a look [here.](https://github.com/gitcodebob/marstek-venus-rs485-node-red)
+
+
+### Version history:
+
+* V1.0: first version
+* V1.1: added mppt values
 
