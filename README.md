@@ -1,5 +1,5 @@
 # Marstek Venus A/D-modbus-TCP-IP
-### **Home assistant yaml files to readout the Marstek V3 directly through ethernet by modbus TCP-IP**
+### **Home assistant yaml files to readout the Marstek directly through ethernet by modbus TCP-IP**
 
 * To use this in your Home Assistant setup add this block to your main configuration.yaml file:
 ```
