@@ -1,20 +1,20 @@
 # -----------------------------------------------------------------
 # Home Assistant Marstek Venus A/D - Modbus TCP/IP direct through ethernet
-# Version: 1.1  / Added MPPT values
+# Version: 1.2  / Added Real Battery Import Power
 # Note:
 # Fork of https://github.com/Superduper1969/MarstekVenus-ElfinEW11
 # -----------------------------------------------------------------
-# Use this file for the second Marstek Venus.
-# change host: [YOURIPADRESS] to host: 192.168.0.245 (for example)
+# Use this file for the first Marstek Venus.
+# change host: [YOURIPADDRESS] to host: 192.168.0.245 (for example)
 # -----------------------------------------------------------------
 
 # ------
 # MODBUS
 # ------
 modbus:
-  - name: marstekvenus2  # Rename marstekvenus1 to marstekvenus2, or marstekvenus3 when multiple batteries
+  - name: marstekvenus2  # Rename marstekvenus2 to marstekvenus1, or marstekvenus3 when multiple batteries
     type: tcp
-    host: [YOURIPADRESS]
+    host: [YOURIPADDRESS]
     port: 502
     delay: 1
     message_wait_milliseconds: 35
@@ -1164,9 +1164,58 @@ template:
             unknown
           {% endif %}
 
-# ---------------
-# TEMPLATE SELECT
-# ---------------
+      - name: "Marstek m2 MPPT Total Power"
+        unique_id: marstek_m2_mppt_total_power
+        unit_of_measurement: W
+        device_class: power
+        state_class: measurement
+        state: >-
+          {{
+            states('sensor.marstek_m2_mppt1_power') | float(0)
+            + states('sensor.marstek_m2_mppt2_power') | float(0)
+            + states('sensor.marstek_m2_mppt3_power') | float(0)
+            + states('sensor.marstek_m2_mppt4_power') | float(0)
+          }}
+
+      - name: "Marstek m2 Real Battery Power"
+        unique_id: marstek_m2_real_battery_power
+        unit_of_measurement: W
+        device_class: power
+        state_class: measurement
+        state: >-
+          {{
+            -(
+              states('sensor.marstek_m2_mppt_total_power') | float(0)
+              + states('sensor.marstek_m2_battery_power') | float(0)
+            )
+          }}
+
+      - name: "Marstek m2 Real Battery Import Power"
+        unique_id: marstek_m2_real_battery_import_power
+        unit_of_measurement: W
+        device_class: power
+        state_class: measurement
+        availability: >-
+          {{ states('sensor.marstek_m2_real_battery_power') not in ['unknown', 'unavailable', 'none'] }}
+        state: >-
+          {% set power = states('sensor.marstek_m2_real_battery_power') | float(0) %}
+          {{ (-power) if power < 0 else 0 }}
+
+      - name: "Marstek m2 Real Battery Export Power"
+        unique_id: marstek_m2_real_battery_export_power
+        unit_of_measurement: W
+        device_class: power
+        state_class: measurement
+        availability: >-
+          {{ states('sensor.marstek_m2_real_battery_power') not in ['unknown', 'unavailable', 'none'] }}
+        state: >-
+          {% set power = states('sensor.marstek_m2_real_battery_power') | float(0) %}
+          {{ power if power > 0 else 0 }}
+          
+
+  # ---------------
+  # TEMPLATE SELECT
+  # ---------------
   - select:
       - name: Marstek m2 RS485 Control Mode
         unique_id: marstek_m2_rs485_control_mode
@@ -1353,6 +1402,34 @@ template:
 
         optimistic: true
 
+sensor:
+  - platform: integration
+    source: sensor.marstek_m2_mppt_total_power
+    name: "Marstek m2 MPPT Total Energy"
+    unique_id: marstek_m2_mppt_total_energy
+    unit_prefix: k
+    unit_time: h
+    method: left
+    round: 3
+
+  - platform: integration
+    source: sensor.marstek_m2_real_battery_import_power
+    name: "Marstek m2 Real Battery Import Energy"
+    unique_id: marstek_m2_real_battery_import_energy
+    unit_prefix: k
+    unit_time: h
+    method: left
+    round: 3
+    
+  - platform: integration
+    source: sensor.marstek_m2_real_battery_export_power
+    name: "Marstek m2 Real Battery Export Energy"
+    unique_id: marstek_m2_real_battery_export_energy
+    unit_prefix: k
+    unit_time: h
+    method: left
+    round: 3
+
 homeassistant:
   customize: # Add icons to modbus sensors
     sensor.marstek_m2_battery_state_of_charge:
@@ -1400,7 +1477,28 @@ homeassistant:
     sensor.marstek_m2_battery_cell_15_voltage:
       icon: mdi:current-dc
     sensor.marstek_m2_battery_cell_16_voltage:
-
       icon: mdi:current-dc
-
-
+    sensor.marstek_m2_mppt1_voltage:
+      icon: mdi:solar-panel-large
+    sensor.marstek_m2_mppt1_current:
+      icon: mdi:current-ac
+    sensor.marstek_m2_mppt1_power:
+      icon: mdi:flash
+    sensor.marstek_m2_mppt2_voltage:
+      icon: mdi:solar-panel-large
+    sensor.marstek_m2_mppt2_current:
+      icon: mdi:current-ac
+    sensor.marstek_m2_mppt2_power:
+      icon: mdi:flash
+    sensor.marstek_m2_mppt3_voltage:
+      icon: mdi:solar-panel-large
+    sensor.marstek_m2_mppt3_current:
+      icon: mdi:current-ac
+    sensor.marstek_m2_mppt3_power:
+      icon: mdi:flash
+    sensor.marstek_m2_mppt4_voltage:
+      icon: mdi:solar-panel-large
+    sensor.marstek_m2_mppt4_current:
+      icon: mdi:current-ac
+    sensor.marstek_m2_mppt4_power:
+      icon: mdi:flash
