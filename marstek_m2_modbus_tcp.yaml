@@ -386,7 +386,7 @@ modbus:
         precision: 2
 
       - name: "Marstek m2 Battery Cycle Count"
-        unique_id: marstek_m1_battery_cycle_count
+        unique_id: marstek_m2_battery_cycle_count
         address: 34003
         slave: 1
         scan_interval: 30
