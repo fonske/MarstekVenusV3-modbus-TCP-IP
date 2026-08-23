@@ -385,6 +385,20 @@ modbus:
         offset: 0
         precision: 2
 
+      - name: "Marstek m4 Battery Cycle Count"
+        unique_id: marstek_m4_battery_cycle_count
+        address: 34003
+        slave: 1
+        scan_interval: 30
+        input_type: holding
+        data_type: uint16
+        icon: "mdi:counter"
+        state_class: total_increasing
+        category: diagnostic
+        scale: 1
+        offset: 0
+        precision: 0
+        
       - name: "Marstek m4 Battery Cell 1 Voltage"
         unique_id: marstek_m4_battery_cell_1_voltage
         address: 34018
