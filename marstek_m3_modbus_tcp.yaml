@@ -393,7 +393,6 @@ modbus:
         input_type: holding
         data_type: uint16
         state_class: total_increasing
-        category: diagnostic
         scale: 1
         offset: 0
         precision: 0
