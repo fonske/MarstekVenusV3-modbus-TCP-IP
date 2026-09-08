@@ -392,7 +392,6 @@ modbus:
         scan_interval: 30
         input_type: holding
         data_type: uint16
-        icon: "mdi:counter"
         state_class: total_increasing
         category: diagnostic
         scale: 1
