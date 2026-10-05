@@ -385,15 +385,17 @@ modbus:
         offset: 0
         precision: 2
 
-      - name: "Marstek m1 Cycle Counter"
-        unique_id: marstek_m1_cycle_counter
+      - name: "Marstek m1 Battery Cycle Count"
+        unique_id: marstek_m1_battery_cycle_count
         slave: 1
-        scan_interval: 60
+        scan_interval: 30
         address: 34003
         input_type: holding
         data_type: uint16
+        state_class: total_increasing
+        scale: 1
+        offset: 0
         precision: 0
-        state_class: measurement
         unit_of_measurement: ""
         icon: mdi:chart-bar
 
