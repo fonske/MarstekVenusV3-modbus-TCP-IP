@@ -4,7 +4,7 @@
 # Note:
 # Fork of https://github.com/Superduper1969/MarstekVenus-ElfinEW11
 # -----------------------------------------------------------------
-# Use this file for the first Marstek Venus.
+# Use this file for the second Marstek Venus.
 # change host: [YOURIPADDRESS] to host: 192.168.0.245 (for example)
 # -----------------------------------------------------------------
 
@@ -12,7 +12,7 @@
 # MODBUS
 # ------
 modbus:
-  - name: marstekvenus2  # Rename marstekvenus2 to marstekvenus1, or marstekvenus3 when multiple batteries
+  - name: marstekvenus2  # One file per battery: marstekvenus1 .. marstekvenus4
     type: tcp
     host: [YOURIPADDRESS]
     port: 502
@@ -342,7 +342,7 @@ modbus:
         scale: 1
         offset: 0
         precision: 0
-   
+
       - name: "Marstek m2 Battery State Of Charge"
         unique_id: marstek_m2_battery_state_of_charge
         address: 32104
@@ -1100,7 +1100,7 @@ template:
           {% set max_v = states('sensor.marstek_m2_battery_maximum_cell_voltage') %}
           {% set min_v = states('sensor.marstek_m2_battery_minimum_cell_voltage') %}
           {% if max_v not in ['unknown', 'unavailable', ''] and min_v not in ['unknown', 'unavailable', ''] %}
-            {{ ((max_v | float) - (min_v | float)) * 1000 | round(0) | int }}
+            {{ (((max_v | float) - (min_v | float)) * 1000) | round(0) | int }}
           {% else %}
             unknown
           {% endif %}
@@ -1211,11 +1211,10 @@ template:
         state: >-
           {% set power = states('sensor.marstek_m2_real_battery_power') | float(0) %}
           {{ power if power > 0 else 0 }}
-          
 
-  # ---------------
-  # TEMPLATE SELECT
-  # ---------------
+# ---------------
+# TEMPLATE SELECT
+# ---------------
   - select:
       - name: Marstek m2 RS485 Control Mode
         unique_id: marstek_m2_rs485_control_mode
@@ -1271,7 +1270,7 @@ template:
         icon: mdi:arrow-up-down
         options: "{{ ['stop', 'charge','discharge'] }}"
         state: >
-          {% set opt = (states('sensor.marstek_m2_forcible_charge_discharge_number') | int) %}
+          {% set opt = (states('sensor.marstek_m2_forcible_charge_discharge_number') | int(default=0)) %}
           {% set mapper = {
             0: 'stop',
             1: 'charge',
@@ -1354,7 +1353,7 @@ template:
         unique_id: marstek_m2_charge_to_soc
         icon: mdi:tune-variant
         unit_of_measurement: "%"
-        state: "{{ states('sensor.charge_to_soc_number') | float(0) }}"
+        state: "{{ states('sensor.marstek_m2_charge_to_soc_number') | float(0) }}"
         set_value:
           - service: modbus.write_register
             data:
@@ -1399,7 +1398,6 @@ template:
         step: 1
         min: 0
         max: 2500
-
         optimistic: true
 
 sensor:
@@ -1420,7 +1418,7 @@ sensor:
     unit_time: h
     method: left
     round: 3
-    
+
   - platform: integration
     source: sensor.marstek_m2_real_battery_export_power
     name: "Marstek m2 Real Battery Export Energy"
