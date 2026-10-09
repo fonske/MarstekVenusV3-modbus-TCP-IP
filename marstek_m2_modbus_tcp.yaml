@@ -12,9 +12,9 @@
 # MODBUS
 # ------
 modbus:
-  - name: marstekvenus2  # Rename marstekvenus1 to marstekvenus2, or marstekvenus3 when multiple batteries
+  - name: marstekvenus2  # One file per battery: marstekvenus1 .. marstekvenus4
     type: tcp
-    host: [YOURIPADDRESS] 
+    host: [YOURIPADDRESS]
     port: 502
     delay: 1
     message_wait_milliseconds: 35
@@ -135,7 +135,7 @@ modbus:
 
       - name: "Marstek m2 Battery Voltage"
         unique_id: marstek_m2_battery_voltage
-        address: 30100
+        address: 32100
         slave: 1
         scan_interval: 10
         input_type: holding
@@ -712,7 +712,7 @@ template:
           {% set mapping = {
             0:'Disconnected',
             1:'Connected' } %}
-          {{ mapping[states('sensor.marstek_m2_wifi_state_number') | int] }}
+          {{ mapping.get(states('sensor.marstek_m2_wifi_state_number') | int(-1), 'unknown') }}
 
       - name: "Marstek m2 BT state"
         unique_id: marstek_m2_bt_state
@@ -723,16 +723,16 @@ template:
             1:'Connected after reboot',
             2:'Connected',
             3:'Active' } %}
-          {{ mapping[states('sensor.marstek_m2_bt_state_number') | int] }}
+          {{ mapping.get(states('sensor.marstek_m2_bt_state_number') | int(-1), 'unknown') }}
 
       - name: "Marstek m2 Cloud state"
         unique_id: marstek_m2_cloud_state
-        icon: mdi:home-heart
+        icon: mdi:cloud-outline
         state: >
           {% set mapping = {
             0:'Disconnected',
             1:'Connected' } %}
-          {{ mapping[states('sensor.marstek_m2_cloud_state_number') | int] }}
+          {{ mapping.get(states('sensor.marstek_m2_cloud_state_number') | int(-1), 'unknown') }}
 
       - name: "Marstek m2 Inverter State"
         unique_id: marstek_m2_inverter_state
@@ -746,7 +746,7 @@ template:
             4:'Fault',
             5:'Idle',
             6:'AC bypass' } %}
-          {{ mapping[states('sensor.marstek_m2_inverter_state_number') | int] }}
+          {{ mapping.get(states('sensor.marstek_m2_inverter_state_number') | int(-1), 'unknown') }}
 
       - name: "Marstek m2 Battery Cell Voltage Delta"
         unique_id: marstek_m2_battery_cell_voltage_delta
@@ -794,16 +794,15 @@ template:
         state_class: measurement
         device_class: energy_storage
         state: >
-          {% set maxbat = 5 | float(default=0) %}
-          {% set currentsoc= 11.0 | float(default=0) %}
-          {% if has_value('sensor.marstek_m2_battery_total_energy') %}
-            {% set maxbat= (states("sensor.marstek_m2_battery_total_energy") | float(default=0) * 1006) | round(0) %}
+          {% set maxbat_raw = states('sensor.marstek_m2_battery_total_energy') %}
+          {% set soc_raw = states('sensor.marstek_m2_battery_state_of_charge') %}
+          {% if maxbat_raw not in ['unknown','unavailable',''] and soc_raw not in ['unknown','unavailable',''] %}
+            {% set maxbat = maxbat_raw | float %}
+            {% set currentsoc = soc_raw | float %}
+            {{ (currentsoc / 100 * maxbat) | round(2) }}
+          {% else %}
+            unknown
           {% endif %}
-          {% if has_value('sensor.marstek_m2_battery_state_of_charge') %}
-            {% set currentsoc= states("sensor.marstek_m2_battery_state_of_charge") | float(default=0) | round(1) %}
-          {% endif %}
-          {% set currentbat= ((currentsoc / 100 | float(default=0) * (maxbat )) /1000 | float(default=0)) | round(2) %}
-          {{ currentbat }}
 
 # ---------------
 # TEMPLATE SELECT
@@ -863,7 +862,7 @@ template:
         icon: mdi:arrow-up-down
         options: "{{ ['stop', 'charge','discharge'] }}"
         state: >
-          {% set opt = (states('sensor.marstek_m2_forcible_charge_discharge_number') | int) %}
+          {% set opt = (states('sensor.marstek_m2_forcible_charge_discharge_number') | int(default=0)) %}
           {% set mapper = {
             0: 'stop',
             1: 'charge',
@@ -946,7 +945,7 @@ template:
         unique_id: marstek_m2_charge_to_soc
         icon: mdi:tune-variant
         unit_of_measurement: "%"
-        state: "{{ states('sensor.charge_to_soc_number') | float(0) }}"
+        state: "{{ states('sensor.marstek_m2_charge_to_soc_number') | float(0) }}"
         set_value:
           - service: modbus.write_register
             data:
