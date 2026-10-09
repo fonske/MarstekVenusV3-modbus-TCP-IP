@@ -1,10 +1,10 @@
 # -----------------------------------------------------------------
 # Home Assistant Marstek Venus A/D - Modbus TCP/IP direct through ethernet
-# Version: 1.2  / Added Real Battery Import Power
+# Version: 1.3  / MPPT, Real Battery Power/Energy and battery_1 to 6 SOC and cells
 # Note:
 # Fork of https://github.com/Superduper1969/MarstekVenus-ElfinEW11
 # -----------------------------------------------------------------
-# Use this file for the first Marstek Venus.
+# Use this file for the second Marstek Venus.
 # change host: [YOURIPADDRESS] to host: 192.168.0.245 (for example)
 # -----------------------------------------------------------------
 
@@ -12,7 +12,7 @@
 # MODBUS
 # ------
 modbus:
-  - name: marstekvenus2  # Rename marstekvenus2 to marstekvenus1, or marstekvenus3 when multiple batteries
+  - name: marstekvenus2  # One file per battery: marstekvenus1 .. marstekvenus4
     type: tcp
     host: [YOURIPADDRESS]
     port: 502
@@ -342,7 +342,7 @@ modbus:
         scale: 1
         offset: 0
         precision: 0
-   
+     
       - name: "Marstek m2 Battery State Of Charge"
         unique_id: marstek_m2_battery_state_of_charge
         address: 32104
@@ -748,6 +748,1229 @@ modbus:
         offset: 0
         precision: 3
 
+      # -----------------------------------------------------------------
+      # Per battery pack (battery_1 .. battery_6)
+      # Source: ViperRNMC/marstek_venus_modbus registers/a.yaml + d.yaml
+      # Suitable for Venus A and Venus D (same address layout)
+      # Pack N base address = 34000 + (N-1)*100
+      #   +2       = pack SoC           (uint16, scale 0.1 %)
+      #   +18..+33 = cell 1..16 voltage (scale 0.001 V)
+      # Venus D packs have 16 cells, Venus A packs have 13 cells:
+      # on a Venus A, Cell 14..16 read 0 and can be removed.
+      # Battery 1 cell voltages (34018-34033) already exist above as
+      # "Battery Cell 1..16 Voltage", so only the SoC is added for battery 1.
+      # Packs that are not installed will read 0.
+      # -----------------------------------------------------------------
+      # Battery 1
+      - name: "Marstek m2 Battery 1 SOC"
+        unique_id: marstek_m2_battery_1_soc
+        address: 34002
+        slave: 1
+        scan_interval: 30
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "%"
+        device_class: battery
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+
+      # Battery 2
+      - name: "Marstek m2 Battery 2 SOC"
+        unique_id: marstek_m2_battery_2_soc
+        address: 34102
+        slave: 1
+        scan_interval: 30
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "%"
+        device_class: battery
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+
+      - name: "Marstek m2 Battery 2 Cell 1 Voltage"
+        unique_id: marstek_m2_battery_2_cell_1_voltage
+        address: 34118
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 2 Cell 2 Voltage"
+        unique_id: marstek_m2_battery_2_cell_2_voltage
+        address: 34119
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 2 Cell 3 Voltage"
+        unique_id: marstek_m2_battery_2_cell_3_voltage
+        address: 34120
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 2 Cell 4 Voltage"
+        unique_id: marstek_m2_battery_2_cell_4_voltage
+        address: 34121
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 2 Cell 5 Voltage"
+        unique_id: marstek_m2_battery_2_cell_5_voltage
+        address: 34122
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 2 Cell 6 Voltage"
+        unique_id: marstek_m2_battery_2_cell_6_voltage
+        address: 34123
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 2 Cell 7 Voltage"
+        unique_id: marstek_m2_battery_2_cell_7_voltage
+        address: 34124
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 2 Cell 8 Voltage"
+        unique_id: marstek_m2_battery_2_cell_8_voltage
+        address: 34125
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 2 Cell 9 Voltage"
+        unique_id: marstek_m2_battery_2_cell_9_voltage
+        address: 34126
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 2 Cell 10 Voltage"
+        unique_id: marstek_m2_battery_2_cell_10_voltage
+        address: 34127
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 2 Cell 11 Voltage"
+        unique_id: marstek_m2_battery_2_cell_11_voltage
+        address: 34128
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 2 Cell 12 Voltage"
+        unique_id: marstek_m2_battery_2_cell_12_voltage
+        address: 34129
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 2 Cell 13 Voltage"
+        unique_id: marstek_m2_battery_2_cell_13_voltage
+        address: 34130
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 2 Cell 14 Voltage"
+        unique_id: marstek_m2_battery_2_cell_14_voltage
+        address: 34131
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 2 Cell 15 Voltage"
+        unique_id: marstek_m2_battery_2_cell_15_voltage
+        address: 34132
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 2 Cell 16 Voltage"
+        unique_id: marstek_m2_battery_2_cell_16_voltage
+        address: 34133
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      # Battery 3
+      - name: "Marstek m2 Battery 3 SOC"
+        unique_id: marstek_m2_battery_3_soc
+        address: 34202
+        slave: 1
+        scan_interval: 30
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "%"
+        device_class: battery
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+
+      - name: "Marstek m2 Battery 3 Cell 1 Voltage"
+        unique_id: marstek_m2_battery_3_cell_1_voltage
+        address: 34218
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 3 Cell 2 Voltage"
+        unique_id: marstek_m2_battery_3_cell_2_voltage
+        address: 34219
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 3 Cell 3 Voltage"
+        unique_id: marstek_m2_battery_3_cell_3_voltage
+        address: 34220
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 3 Cell 4 Voltage"
+        unique_id: marstek_m2_battery_3_cell_4_voltage
+        address: 34221
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 3 Cell 5 Voltage"
+        unique_id: marstek_m2_battery_3_cell_5_voltage
+        address: 34222
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 3 Cell 6 Voltage"
+        unique_id: marstek_m2_battery_3_cell_6_voltage
+        address: 34223
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 3 Cell 7 Voltage"
+        unique_id: marstek_m2_battery_3_cell_7_voltage
+        address: 34224
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 3 Cell 8 Voltage"
+        unique_id: marstek_m2_battery_3_cell_8_voltage
+        address: 34225
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 3 Cell 9 Voltage"
+        unique_id: marstek_m2_battery_3_cell_9_voltage
+        address: 34226
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 3 Cell 10 Voltage"
+        unique_id: marstek_m2_battery_3_cell_10_voltage
+        address: 34227
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 3 Cell 11 Voltage"
+        unique_id: marstek_m2_battery_3_cell_11_voltage
+        address: 34228
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 3 Cell 12 Voltage"
+        unique_id: marstek_m2_battery_3_cell_12_voltage
+        address: 34229
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 3 Cell 13 Voltage"
+        unique_id: marstek_m2_battery_3_cell_13_voltage
+        address: 34230
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 3 Cell 14 Voltage"
+        unique_id: marstek_m2_battery_3_cell_14_voltage
+        address: 34231
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 3 Cell 15 Voltage"
+        unique_id: marstek_m2_battery_3_cell_15_voltage
+        address: 34232
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 3 Cell 16 Voltage"
+        unique_id: marstek_m2_battery_3_cell_16_voltage
+        address: 34233
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      # Battery 4
+      - name: "Marstek m2 Battery 4 SOC"
+        unique_id: marstek_m2_battery_4_soc
+        address: 34302
+        slave: 1
+        scan_interval: 30
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "%"
+        device_class: battery
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+
+      - name: "Marstek m2 Battery 4 Cell 1 Voltage"
+        unique_id: marstek_m2_battery_4_cell_1_voltage
+        address: 34318
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 4 Cell 2 Voltage"
+        unique_id: marstek_m2_battery_4_cell_2_voltage
+        address: 34319
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 4 Cell 3 Voltage"
+        unique_id: marstek_m2_battery_4_cell_3_voltage
+        address: 34320
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 4 Cell 4 Voltage"
+        unique_id: marstek_m2_battery_4_cell_4_voltage
+        address: 34321
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 4 Cell 5 Voltage"
+        unique_id: marstek_m2_battery_4_cell_5_voltage
+        address: 34322
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 4 Cell 6 Voltage"
+        unique_id: marstek_m2_battery_4_cell_6_voltage
+        address: 34323
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 4 Cell 7 Voltage"
+        unique_id: marstek_m2_battery_4_cell_7_voltage
+        address: 34324
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 4 Cell 8 Voltage"
+        unique_id: marstek_m2_battery_4_cell_8_voltage
+        address: 34325
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 4 Cell 9 Voltage"
+        unique_id: marstek_m2_battery_4_cell_9_voltage
+        address: 34326
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 4 Cell 10 Voltage"
+        unique_id: marstek_m2_battery_4_cell_10_voltage
+        address: 34327
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 4 Cell 11 Voltage"
+        unique_id: marstek_m2_battery_4_cell_11_voltage
+        address: 34328
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 4 Cell 12 Voltage"
+        unique_id: marstek_m2_battery_4_cell_12_voltage
+        address: 34329
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 4 Cell 13 Voltage"
+        unique_id: marstek_m2_battery_4_cell_13_voltage
+        address: 34330
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 4 Cell 14 Voltage"
+        unique_id: marstek_m2_battery_4_cell_14_voltage
+        address: 34331
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 4 Cell 15 Voltage"
+        unique_id: marstek_m2_battery_4_cell_15_voltage
+        address: 34332
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 4 Cell 16 Voltage"
+        unique_id: marstek_m2_battery_4_cell_16_voltage
+        address: 34333
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      # Battery 5
+      - name: "Marstek m2 Battery 5 SOC"
+        unique_id: marstek_m2_battery_5_soc
+        address: 34402
+        slave: 1
+        scan_interval: 30
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "%"
+        device_class: battery
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+
+      - name: "Marstek m2 Battery 5 Cell 1 Voltage"
+        unique_id: marstek_m2_battery_5_cell_1_voltage
+        address: 34418
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 5 Cell 2 Voltage"
+        unique_id: marstek_m2_battery_5_cell_2_voltage
+        address: 34419
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 5 Cell 3 Voltage"
+        unique_id: marstek_m2_battery_5_cell_3_voltage
+        address: 34420
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 5 Cell 4 Voltage"
+        unique_id: marstek_m2_battery_5_cell_4_voltage
+        address: 34421
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 5 Cell 5 Voltage"
+        unique_id: marstek_m2_battery_5_cell_5_voltage
+        address: 34422
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 5 Cell 6 Voltage"
+        unique_id: marstek_m2_battery_5_cell_6_voltage
+        address: 34423
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 5 Cell 7 Voltage"
+        unique_id: marstek_m2_battery_5_cell_7_voltage
+        address: 34424
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 5 Cell 8 Voltage"
+        unique_id: marstek_m2_battery_5_cell_8_voltage
+        address: 34425
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 5 Cell 9 Voltage"
+        unique_id: marstek_m2_battery_5_cell_9_voltage
+        address: 34426
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 5 Cell 10 Voltage"
+        unique_id: marstek_m2_battery_5_cell_10_voltage
+        address: 34427
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 5 Cell 11 Voltage"
+        unique_id: marstek_m2_battery_5_cell_11_voltage
+        address: 34428
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 5 Cell 12 Voltage"
+        unique_id: marstek_m2_battery_5_cell_12_voltage
+        address: 34429
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 5 Cell 13 Voltage"
+        unique_id: marstek_m2_battery_5_cell_13_voltage
+        address: 34430
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 5 Cell 14 Voltage"
+        unique_id: marstek_m2_battery_5_cell_14_voltage
+        address: 34431
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 5 Cell 15 Voltage"
+        unique_id: marstek_m2_battery_5_cell_15_voltage
+        address: 34432
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 5 Cell 16 Voltage"
+        unique_id: marstek_m2_battery_5_cell_16_voltage
+        address: 34433
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      # Battery 6
+      - name: "Marstek m2 Battery 6 SOC"
+        unique_id: marstek_m2_battery_6_soc
+        address: 34502
+        slave: 1
+        scan_interval: 30
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "%"
+        device_class: battery
+        state_class: measurement
+        scale: 0.1
+        offset: 0
+        precision: 1
+
+      - name: "Marstek m2 Battery 6 Cell 1 Voltage"
+        unique_id: marstek_m2_battery_6_cell_1_voltage
+        address: 34518
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 6 Cell 2 Voltage"
+        unique_id: marstek_m2_battery_6_cell_2_voltage
+        address: 34519
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 6 Cell 3 Voltage"
+        unique_id: marstek_m2_battery_6_cell_3_voltage
+        address: 34520
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 6 Cell 4 Voltage"
+        unique_id: marstek_m2_battery_6_cell_4_voltage
+        address: 34521
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 6 Cell 5 Voltage"
+        unique_id: marstek_m2_battery_6_cell_5_voltage
+        address: 34522
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 6 Cell 6 Voltage"
+        unique_id: marstek_m2_battery_6_cell_6_voltage
+        address: 34523
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 6 Cell 7 Voltage"
+        unique_id: marstek_m2_battery_6_cell_7_voltage
+        address: 34524
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 6 Cell 8 Voltage"
+        unique_id: marstek_m2_battery_6_cell_8_voltage
+        address: 34525
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 6 Cell 9 Voltage"
+        unique_id: marstek_m2_battery_6_cell_9_voltage
+        address: 34526
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 6 Cell 10 Voltage"
+        unique_id: marstek_m2_battery_6_cell_10_voltage
+        address: 34527
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 6 Cell 11 Voltage"
+        unique_id: marstek_m2_battery_6_cell_11_voltage
+        address: 34528
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 6 Cell 12 Voltage"
+        unique_id: marstek_m2_battery_6_cell_12_voltage
+        address: 34529
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 6 Cell 13 Voltage"
+        unique_id: marstek_m2_battery_6_cell_13_voltage
+        address: 34530
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 6 Cell 14 Voltage"
+        unique_id: marstek_m2_battery_6_cell_14_voltage
+        address: 34531
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 6 Cell 15 Voltage"
+        unique_id: marstek_m2_battery_6_cell_15_voltage
+        address: 34532
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
+      - name: "Marstek m2 Battery 6 Cell 16 Voltage"
+        unique_id: marstek_m2_battery_6_cell_16_voltage
+        address: 34533
+        slave: 1
+        scan_interval: 60
+        input_type: holding
+        data_type: uint16
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scale: 0.001
+        offset: 0
+        precision: 3
+
       - name: "Marstek m2 Internal Temperature"
         unique_id: marstek_m2_internal_temperature
         address: 35000
@@ -1100,7 +2323,7 @@ template:
           {% set max_v = states('sensor.marstek_m2_battery_maximum_cell_voltage') %}
           {% set min_v = states('sensor.marstek_m2_battery_minimum_cell_voltage') %}
           {% if max_v not in ['unknown', 'unavailable', ''] and min_v not in ['unknown', 'unavailable', ''] %}
-            {{ ((max_v | float) - (min_v | float)) * 1000 | round(0) | int }}
+            {{ (((max_v | float) - (min_v | float)) * 1000) | round(0) | int }}
           {% else %}
             unknown
           {% endif %}
@@ -1211,11 +2434,10 @@ template:
         state: >-
           {% set power = states('sensor.marstek_m2_real_battery_power') | float(0) %}
           {{ power if power > 0 else 0 }}
-          
 
-  # ---------------
-  # TEMPLATE SELECT
-  # ---------------
+# ---------------
+# TEMPLATE SELECT
+# ---------------
   - select:
       - name: Marstek m2 RS485 Control Mode
         unique_id: marstek_m2_rs485_control_mode
@@ -1271,7 +2493,7 @@ template:
         icon: mdi:arrow-up-down
         options: "{{ ['stop', 'charge','discharge'] }}"
         state: >
-          {% set opt = (states('sensor.marstek_m2_forcible_charge_discharge_number') | int) %}
+          {% set opt = (states('sensor.marstek_m2_forcible_charge_discharge_number') | int(default=0)) %}
           {% set mapper = {
             0: 'stop',
             1: 'charge',
@@ -1354,7 +2576,7 @@ template:
         unique_id: marstek_m2_charge_to_soc
         icon: mdi:tune-variant
         unit_of_measurement: "%"
-        state: "{{ states('sensor.charge_to_soc_number') | float(0) }}"
+        state: "{{ states('sensor.marstek_m2_charge_to_soc_number') | float(0) }}"
         set_value:
           - service: modbus.write_register
             data:
@@ -1420,7 +2642,7 @@ sensor:
     unit_time: h
     method: left
     round: 3
-    
+
   - platform: integration
     source: sensor.marstek_m2_real_battery_export_power
     name: "Marstek m2 Real Battery Export Energy"
