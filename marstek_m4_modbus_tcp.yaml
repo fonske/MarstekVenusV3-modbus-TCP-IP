@@ -1043,7 +1043,7 @@ template:
           {% else %}
             {% set cells = namespace(list=[]) %}
             {% for i in range(16) %}
-              {% if flags & (2 ** i) %}
+              {% if flags | bitwise_and(2 ** i) > 0 %}
                 {% set cells.list = cells.list + [(i + 1) | string] %}
               {% endif %}
             {% endfor %}
