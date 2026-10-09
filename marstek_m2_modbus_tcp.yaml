@@ -5,14 +5,14 @@
 # Fork of https://github.com/Superduper1969/MarstekVenus-ElfinEW11
 # -----------------------------------------------------------------
 # Use this file for the second Marstek Venus.
-# change host: [YOURIPADRESS] to host: 192.168.0.245 (for example)
+# change host: [YOURIPADDRESS] to host: 192.168.0.245 (for example)
 # -----------------------------------------------------------------
 
 # ------
 # MODBUS
 # ------
 modbus:
-  - name: marstekvenus2  # Rename marstekvenus1 to marstekvenus2, or marstekvenus3 when multiple batteries
+  - name: marstekvenus2
     type: tcp
     host: [YOURIPADRESS]
     port: 502
@@ -188,7 +188,7 @@ modbus:
         scale: 0.1
         offset: 0
         precision: 1
-        
+
 #      - name: "Marstek m2 Battery State Of Charge"
 #        unique_id: marstek_m2_battery_state_of_charge
 #        address: 32104
@@ -281,7 +281,7 @@ modbus:
 #        input_type: holding
 #        data_type: int16
 #        unit_of_measurement: A
-#       device_class: current
+#        device_class: current
 #        state_class: measurement
 #        scale: 0.01
 #        offset: 0
@@ -293,8 +293,8 @@ modbus:
 #        slave: 1
 #        scan_interval: 30
 #        input_type: holding
-#       data_type: int32
-#       unit_of_measurement: W
+#        data_type: int32
+#        unit_of_measurement: W
 #        device_class: power
 #        state_class: measurement
 #        scale: 1
@@ -387,16 +387,28 @@ modbus:
 
       - name: "Marstek m2 Battery Cycle Count"
         unique_id: marstek_m2_battery_cycle_count
-        address: 34003
         slave: 1
         scan_interval: 30
+        address: 34003
         input_type: holding
         data_type: uint16
         state_class: total_increasing
         scale: 1
         offset: 0
         precision: 0
-        
+        unit_of_measurement: ""
+
+      - name: "Marstek m2 Balancing Flag RAW"
+        unique_id: marstek_m2_balancing_flag_raw
+        slave: 1
+        scan_interval: 60
+        address: 34009
+        input_type: holding
+        data_type: uint16
+        precision: 0
+        state_class: measurement
+        unit_of_measurement: ""
+
       - name: "Marstek m2 Battery Cell 1 Voltage"
         unique_id: marstek_m2_battery_cell_1_voltage
         address: 34018
@@ -552,7 +564,6 @@ modbus:
         scale: 0.001
         offset: 0
         precision: 3
-
 
       - name: "Marstek m2 Battery Cell 13 Voltage"
         unique_id: marstek_m2_battery_cell_13_voltage
@@ -862,7 +873,7 @@ modbus:
         unit_of_measurement: W
         scale: 1
         offset: 0
-        precision: 0        
+        precision: 0
 
       - name: "Marstek m2 Max Discharge Power Number"
         unique_id: marstek_m2_max_discharge_power_number
@@ -958,7 +969,7 @@ template:
           {% set max_v = states('sensor.marstek_m2_battery_maximum_cell_voltage') %}
           {% set min_v = states('sensor.marstek_m2_battery_minimum_cell_voltage') %}
           {% if max_v not in ['unknown', 'unavailable', ''] and min_v not in ['unknown', 'unavailable', ''] %}
-            {{ ((max_v | float) - (min_v | float)) * 1000 | round(0) | int }}
+            {{ (((max_v | float) - (min_v | float)) * 1000) | round(0) | int }}
           {% else %}
             unknown
           {% endif %}
@@ -1022,6 +1033,23 @@ template:
             unknown
           {% endif %}
 
+      - name: "Marstek m2 Cells Currently Balancing"
+        unique_id: marstek_m2_cells_currently_balancing
+        icon: mdi:battery-sync
+        state: >
+          {% set flags = states('sensor.marstek_m2_balancing_flag_raw') | int(0) %}
+          {% if flags == 0 %}
+            None
+          {% else %}
+            {% set cells = namespace(list=[]) %}
+            {% for i in range(16) %}
+              {% if flags & (2 ** i) %}
+                {% set cells.list = cells.list + [(i + 1) | string] %}
+              {% endif %}
+            {% endfor %}
+            {{ cells.list | join(', ') }}
+          {% endif %}
+
 # ---------------
 # TEMPLATE SELECT
 # ---------------
@@ -1080,7 +1108,7 @@ template:
         icon: mdi:arrow-up-down
         options: "{{ ['stop', 'charge','discharge'] }}"
         state: >
-          {% set opt = (states('sensor.marstek_m2_forcible_charge_discharge_number') | int) %}
+          {% set opt = (states('sensor.marstek_m2_forcible_charge_discharge_number') | int(default=0)) %}
           {% set mapper = {
             0: 'stop',
             1: 'charge',
@@ -1163,7 +1191,7 @@ template:
         unique_id: marstek_m2_charge_to_soc
         icon: mdi:tune-variant
         unit_of_measurement: "%"
-        state: "{{ states('sensor.charge_to_soc_number') | float(0) }}"
+        state: "{{ states('sensor.marstek_m2_charge_to_soc_number') | float(0) }}"
         set_value:
           - service: modbus.write_register
             data:
@@ -1208,7 +1236,6 @@ template:
         step: 1
         min: 0
         max: 2500
-
         optimistic: true
 
 homeassistant:
@@ -1227,6 +1254,10 @@ homeassistant:
       icon: mdi:factory
     sensor.marstek_m2_mac:
       icon: mdi:rename-box-outline
+    sensor.marstek_m2_battery_cycle_count:
+      icon: mdi:chart-bar
+    sensor.marstek_m2_balancing_flag_raw:
+      icon: mdi:battery-sync
     sensor.marstek_m2_battery_cell_1_voltage:
       icon: mdi:current-dc
     sensor.marstek_m2_battery_cell_2_voltage:
@@ -1258,6 +1289,4 @@ homeassistant:
     sensor.marstek_m2_battery_cell_15_voltage:
       icon: mdi:current-dc
     sensor.marstek_m2_battery_cell_16_voltage:
-
       icon: mdi:current-dc
-
